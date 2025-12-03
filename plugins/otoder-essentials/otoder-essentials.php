@@ -18,6 +18,7 @@ class Otoder_Essentials {
         register_activation_hook(__FILE__, [$this, 'on_activate']);
         register_deactivation_hook(__FILE__, [$this, 'on_deactivate']);
         add_action('plugins_loaded', [$this, 'maybe_schedule']);
+        add_action('otoder_seed_defaults', [$this, 'seed_all']);
         add_action('otoder_aggregator_run', [$this, 'run_aggregator']);
         add_action('admin_menu', [$this, 'register_admin_page']);
         add_action('admin_post_otoder_seed_content', [$this, 'handle_seed_request']);
@@ -60,10 +61,7 @@ class Otoder_Essentials {
     }
 
     public function on_activate() {
-        $this->register_listing_support();
-        $this->seed_pages_and_terms();
-        $this->seed_demo_listings();
-        $this->maybe_schedule();
+        $this->seed_all();
     }
 
     public function on_deactivate() {
@@ -100,6 +98,11 @@ class Otoder_Essentials {
                 'title' => 'Vitrin',
                 'slug' => 'vitrin',
                 'content' => '[otoder_search]',
+            ],
+            [
+                'title' => 'Kurumsal',
+                'slug' => 'kurumsal',
+                'content' => __('arabam.com görünümünde tam otomatik ilan sitesi: ücretsiz üyelik, otomatik ithalat ve SEO uyumlu açıklamalar.', 'otoder'),
             ],
         ];
     }
@@ -156,6 +159,10 @@ class Otoder_Essentials {
                 'location' => 'İstanbul',
                 'body_type' => 'Sedan',
                 'color' => 'Gri',
+                'gallery' => [
+                    'https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=800&q=60',
+                    'https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=700&q=60',
+                ],
             ],
             [
                 'title' => '2020 Volkswagen Golf 1.5 eTSI Style',
@@ -169,6 +176,9 @@ class Otoder_Essentials {
                 'location' => 'Ankara',
                 'body_type' => 'Hatchback',
                 'color' => 'Beyaz',
+                'gallery' => [
+                    'https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=760&q=60',
+                ],
             ],
             [
                 'title' => '2018 Toyota Corolla 1.6 Elegant',
@@ -182,6 +192,9 @@ class Otoder_Essentials {
                 'location' => 'İzmir',
                 'body_type' => 'Sedan',
                 'color' => 'Siyah',
+                'gallery' => [
+                    'https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=720&q=60',
+                ],
             ],
         ];
 
@@ -192,6 +205,9 @@ class Otoder_Essentials {
                 'post_status' => 'publish',
                 'post_author' => $demo_user,
                 'post_content' => __('Yetkili servis geçmişi bulunan, hasarsız, ekspertiz raporu hazır vitrin aracı.', 'otoder'),
+                'meta_input' => [
+                    'gallery' => implode("\n", $demo['gallery'] ?? []),
+                ],
             ]);
 
             if ($post_id && !is_wp_error($post_id)) {
@@ -209,6 +225,46 @@ class Otoder_Essentials {
         }
 
         update_option(self::OPTION_KEY, 1);
+    }
+
+    private function setup_navigation_and_front() {
+        $menu_name = 'Üst Menü';
+        $menu = wp_get_nav_menu_object($menu_name);
+        if (!$menu) {
+            $menu_id = wp_create_nav_menu($menu_name);
+            $pages = ['ana-sayfa', 'vitrin', 'ilan-gonder', 'hesabim'];
+            foreach ($pages as $slug) {
+                if ($page = get_page_by_path($slug)) {
+                    wp_update_nav_menu_item($menu_id, 0, [
+                        'menu-item-title' => $page->post_title,
+                        'menu-item-object' => 'page',
+                        'menu-item-object-id' => $page->ID,
+                        'menu-item-type' => 'post_type',
+                        'menu-item-status' => 'publish',
+                    ]);
+                }
+            }
+            $menu = wp_get_nav_menu_object($menu_id);
+        }
+
+        if ($menu && !has_nav_menu('primary')) {
+            $locations = get_theme_mod('nav_menu_locations');
+            $locations['primary'] = $menu->term_id;
+            set_theme_mod('nav_menu_locations', $locations);
+        }
+
+        if ($front = get_page_by_path('ana-sayfa')) {
+            update_option('show_on_front', 'page');
+            update_option('page_on_front', $front->ID);
+        }
+    }
+
+    public function seed_all() {
+        $this->register_listing_support();
+        $this->seed_pages_and_terms();
+        $this->seed_demo_listings();
+        $this->setup_navigation_and_front();
+        $this->maybe_schedule();
     }
 
     public function register_admin_page() {
@@ -271,6 +327,9 @@ class Otoder_Essentials {
         foreach ($this->aggregator_sources() as $source => $url) {
             $response = wp_remote_get($url, ['timeout' => 15]);
             $listings = $this->extract_listings_from_response($response, $source);
+            if (empty($listings)) {
+                $listings = $this->sample_source_items($source);
+            }
             foreach ($listings as $listing) {
                 $this->import_listing($listing);
             }
@@ -304,8 +363,12 @@ class Otoder_Essentials {
             }
         }
 
-        if (empty($items)) {
-            $items[] = [
+        return $items;
+    }
+
+    private function sample_source_items($source) {
+        return [
+            [
                 'title' => ucfirst($source) . ' vitrinden örnek ilan',
                 'price' => rand(500000, 1500000),
                 'year' => rand(2016, 2024),
@@ -318,10 +381,22 @@ class Otoder_Essentials {
                 'body_type' => 'Hatchback',
                 'color' => 'Kırmızı',
                 'source' => $source,
-            ];
-        }
-
-        return $items;
+            ],
+            [
+                'title' => 'Öne çıkan ' . ucfirst($source) . ' ilanı',
+                'price' => rand(650000, 2100000),
+                'year' => rand(2017, 2024),
+                'kilometer' => rand(15000, 90000),
+                'fuel' => 'Benzin',
+                'transmission' => 'Otomatik',
+                'brand' => 'Mercedes',
+                'model' => 'E200',
+                'location' => 'İstanbul',
+                'body_type' => 'Sedan',
+                'color' => 'Siyah',
+                'source' => $source,
+            ],
+        ];
     }
 
     private function detect_brand($title) {
@@ -351,6 +426,7 @@ class Otoder_Essentials {
             'sahibinden' => 'doğrudan satıcıdan',
             'acil' => 'öncelikli',
             'full' => 'dolu paket',
+            'sıfır' => 'showroom kondisyon',
         ];
 
         $base = $title . ' - ' . sprintf(__('Bu ilan %s kaynağından özetlenip özgünleştirildi.', 'otoder'), $source);
@@ -362,18 +438,32 @@ class Otoder_Essentials {
             __('Ekspertiz raporu hazır, servis bakımlı, garantili parça kullanıldı.', 'otoder'),
             __('Şehir içi ve uzun yolda sorunsuz, yakıt tasarruflu kombinasyon.', 'otoder'),
             __('Fotoğraflar güncel, yerinde görülmeye hazır.', 'otoder'),
+            __('Dijital vitrin için özgün açıklama ve SEO uyumlu anahtar kelime seti kullanıldı.', 'otoder'),
         ];
 
         shuffle($snippets);
         $unique_tail = wp_generate_password(6, false);
 
-        return $base . ' ' . implode(' ', array_slice($snippets, 0, 2)) . ' #' . $unique_tail;
+        return $base . ' ' . implode(' ', array_slice($snippets, 0, 3)) . ' #' . $unique_tail;
     }
 
     private function import_listing($item) {
-        $existing = get_page_by_title($item['title'], OBJECT, 'listing');
-        if ($existing) {
+        $source_key = md5($item['title'] . $item['source']);
+        $existing = get_posts([
+            'post_type' => 'listing',
+            'posts_per_page' => 1,
+            'meta_key' => 'otoder_source_key',
+            'meta_value' => $source_key,
+            'fields' => 'ids',
+        ]);
+        if (!empty($existing)) {
             return;
+        }
+
+        foreach (['brand', 'model', 'fuel', 'transmission', 'body_type', 'color', 'location'] as $tax) {
+            if (!term_exists($item[$tax], $tax)) {
+                wp_insert_term($item[$tax], $tax);
+            }
         }
 
         $post_id = wp_insert_post([
@@ -390,6 +480,8 @@ class Otoder_Essentials {
                 'body_type' => $item['body_type'],
                 'color' => $item['color'],
                 'location' => $item['location'],
+                'otoder_source_key' => $source_key,
+                'otoder_source' => $item['source'],
             ],
         ]);
 

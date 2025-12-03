@@ -5,8 +5,8 @@ Tam işlevsel, demo içerik yüklü otomobil ilan teması. arabam.com ve sahibin
 ## Kurulum
 1. `car-marketplace-theme` klasörünü `wp-content/themes/` içine kopyalayın.
 2. WordPress yönetiminde **Görünüm > Temalar** ekranından **Otoder Auto Marketplace** temasını etkinleştirin.
-3. Tema etkinleşince demo ilanlar otomatik oluşturulur ve “otoder-demo” adlı kullanıcı eklenir. Ek olarak `Otoder Essentials` eklentisini etkinleştirerek kategorileri, sayfaları ve toplayıcı cron görevini otomatik yükleyebilirsiniz.
-4. Menüleri **Görünüm > Menüler** alanında `Primary` konumuna atayın.
+3. Tema etkinleşince demo ilanlar otomatik oluşturulur ve “otoder-demo” adlı kullanıcı eklenir. Ek olarak `Otoder Essentials` eklentisini etkinleştirerek kategorileri, sayfaları, menü atamasını, ön sayfa ayarını ve toplayıcı cron görevini otomatik yükleyebilirsiniz.
+4. `Otoder Essentials` etkinse menü ve ön sayfa otomatik ayarlanır; değilse Menüleri **Görünüm > Menüler** alanında `Primary` konumuna atayın.
 5. Hızlı kullanım için yeni bir sayfa açıp **Otoder Dashboard** şablonunu seçin veya içerikte `[otoder_account]` kısa kodunu kullanın.
 
 ## Kısa Kodlar
@@ -19,7 +19,7 @@ Tam işlevsel, demo içerik yüklü otomobil ilan teması. arabam.com ve sahibin
 - Custom post type: `listing` ve taksonomiler (marka, model, yakıt, vites, kasa tipi, renk, konum).
 - Meta alanları: fiyat, yıl, kilometre, motor gücü, vites, çekiş, durum, video URL, galeri.
 - Ön yüzden ilan gönderme ve demo içerik seed işlemi.
-- Modern kart tabanlı tasarım, hero alanı, hızlı arama ve ücretsiz üyelik vurguları.
+- Modern kart tabanlı tasarım, arabam.com tonlarında hero alanı, hızlı arama ve ücretsiz üyelik vurguları.
 
 ## Notlar
 - İletişim ya da ödeme modülü yoktur; tamamen ücretsiz ilan odaklıdır.

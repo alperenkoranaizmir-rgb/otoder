@@ -12,7 +12,7 @@ add_action('after_setup_theme', function () {
 });
 
 add_action('wp_enqueue_scripts', function () {
-    wp_enqueue_style('otoder-style', get_stylesheet_uri(), [], '1.0.0');
+    wp_enqueue_style('otoder-style', get_stylesheet_uri(), [], '1.1.0');
 });
 
 /**
@@ -153,22 +153,22 @@ function otoder_submission_shortcode() {
     ob_start();
     echo $message;
     ?>
-    <form class="submit-form" method="post">
+    <form class="form-card" method="post">
         <?php wp_nonce_field('otoder_submit_listing'); ?>
         <label><?php _e('İlan Başlığı', 'otoder'); ?></label>
-        <input type="text" name="listing_title" required>
+        <input type="text" name="listing_title" placeholder="2022 BMW 320i M Sport" required>
 
         <label><?php _e('Açıklama', 'otoder'); ?></label>
-        <textarea name="listing_description" rows="5" required></textarea>
+        <textarea name="listing_description" rows="5" placeholder="Tramersiz, servis bakımlı, ekspertiz hazır..." required></textarea>
 
         <label><?php _e('Fiyat', 'otoder'); ?></label>
-        <input type="text" name="price" required>
+        <input type="text" name="price" inputmode="numeric" required>
 
         <label><?php _e('Model Yılı', 'otoder'); ?></label>
-        <input type="number" name="year" required>
+        <input type="number" name="year" min="1990" max="<?php echo esc_attr(date('Y')); ?>" required>
 
         <label><?php _e('Kilometre', 'otoder'); ?></label>
-        <input type="number" name="kilometer" required>
+        <input type="number" name="kilometer" min="0" step="500" required>
 
         <label><?php _e('Marka', 'otoder'); ?></label>
         <input type="text" name="brand" placeholder="Toyota, BMW" required>
@@ -205,7 +205,7 @@ function otoder_submission_shortcode() {
         <label><?php _e('Fotoğraf URL\'leri', 'otoder'); ?></label>
         <textarea name="gallery" rows="4" placeholder="Her satıra bir görsel linki"></textarea>
 
-        <button class="button" type="submit" name="otoder_submit" value="1"><?php _e('İlanı Yayınla', 'otoder'); ?></button>
+        <button class="button primary" type="submit" name="otoder_submit" value="1"><?php _e('İlanı Yayınla', 'otoder'); ?></button>
     </form>
     <?php
     return ob_get_clean();
@@ -249,7 +249,7 @@ function otoder_account_shortcode() {
 
     if (!is_user_logged_in()) : ?>
         <div class="card-grid">
-            <form class="submit-form" method="post">
+            <form class="form-card" method="post">
                 <h3><?php _e('Ücretsiz Kayıt', 'otoder'); ?></h3>
                 <label><?php _e('Kullanıcı Adı', 'otoder'); ?></label>
                 <input type="text" name="username" required>
@@ -257,9 +257,9 @@ function otoder_account_shortcode() {
                 <input type="email" name="email" required>
                 <label><?php _e('Şifre', 'otoder'); ?></label>
                 <input type="password" name="password" required>
-                <button class="button" type="submit" name="otoder_register" value="1"><?php _e('Kaydol', 'otoder'); ?></button>
+                <button class="button primary" type="submit" name="otoder_register" value="1"><?php _e('Kaydol', 'otoder'); ?></button>
             </form>
-            <form class="submit-form" method="post">
+            <form class="form-card" method="post">
                 <h3><?php _e('Giriş Yap', 'otoder'); ?></h3>
                 <label><?php _e('Kullanıcı Adı', 'otoder'); ?></label>
                 <input type="text" name="username" required>
@@ -348,29 +348,37 @@ function otoder_search_shortcode() {
 
     ob_start();
     ?>
-    <form class="search-form" method="get">
-        <label><?php _e('Marka', 'otoder'); ?></label>
-        <input type="text" name="brand" value="<?php echo esc_attr($_GET['brand'] ?? ''); ?>">
-
-        <label><?php _e('Model', 'otoder'); ?></label>
-        <input type="text" name="model" value="<?php echo esc_attr($_GET['model'] ?? ''); ?>">
-
-        <label><?php _e('Konum', 'otoder'); ?></label>
-        <input type="text" name="location" value="<?php echo esc_attr($_GET['location'] ?? ''); ?>">
-
-        <label><?php _e('Minimum Fiyat', 'otoder'); ?></label>
-        <input type="number" name="min_price" value="<?php echo esc_attr($_GET['min_price'] ?? ''); ?>">
-
-        <label><?php _e('Maksimum Fiyat', 'otoder'); ?></label>
-        <input type="number" name="max_price" value="<?php echo esc_attr($_GET['max_price'] ?? ''); ?>">
-
-        <button class="button" type="submit"><?php _e('Filtrele', 'otoder'); ?></button>
+    <form class="search-box" method="get">
+        <div>
+            <label><?php _e('Marka', 'otoder'); ?></label>
+            <input type="text" name="brand" value="<?php echo esc_attr($_GET['brand'] ?? ''); ?>" placeholder="BMW">
+        </div>
+        <div>
+            <label><?php _e('Model', 'otoder'); ?></label>
+            <input type="text" name="model" value="<?php echo esc_attr($_GET['model'] ?? ''); ?>" placeholder="320i">
+        </div>
+        <div>
+            <label><?php _e('Konum', 'otoder'); ?></label>
+            <input type="text" name="location" value="<?php echo esc_attr($_GET['location'] ?? ''); ?>" placeholder="İstanbul">
+        </div>
+        <div>
+            <label><?php _e('Minimum Fiyat', 'otoder'); ?></label>
+            <input type="number" name="min_price" value="<?php echo esc_attr($_GET['min_price'] ?? ''); ?>" placeholder="250000">
+        </div>
+        <div>
+            <label><?php _e('Maksimum Fiyat', 'otoder'); ?></label>
+            <input type="number" name="max_price" value="<?php echo esc_attr($_GET['max_price'] ?? ''); ?>" placeholder="2500000">
+        </div>
+        <div style="grid-column: 1 / -1; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="button primary" type="submit"><?php _e('Filtrele', 'otoder'); ?></button>
+            <a class="button outline" href="<?php echo esc_url(get_post_type_archive_link('listing')); ?>"><?php _e('Tüm ilanlar', 'otoder'); ?></a>
+        </div>
     </form>
 
-    <div class="card-grid">
+    <div class="grid-listings">
         <?php if ($listings->have_posts()) : while ($listings->have_posts()) : $listings->the_post(); ?>
             <article class="card">
-                <?php if (has_post_thumbnail()) { the_post_thumbnail('medium'); } else { echo '<div class="badge">' . __('Görsel Yok', 'otoder') . '</div>'; } ?>
+                <?php if (has_post_thumbnail()) { the_post_thumbnail('medium', ['class' => 'cover']); } else { echo '<div class="badge">' . __('Görsel Yok', 'otoder') . '</div>'; } ?>
                 <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
                 <div class="price"><?php echo esc_html(get_post_meta(get_the_ID(), 'price', true)); ?> ₺</div>
                 <div class="meta"><?php echo esc_html(get_post_meta(get_the_ID(), 'year', true)); ?> · <?php echo esc_html(get_post_meta(get_the_ID(), 'kilometer', true)); ?> km</div>
@@ -389,19 +397,22 @@ function otoder_search_shortcode() {
 add_shortcode('otoder_search', 'otoder_search_shortcode');
 
 /**
- * Demo content on activation.
+ * Demo content and setup on activation.
  */
 add_action('after_switch_theme', function () {
-    if (get_option('otoder_demo_loaded')) {
+    /**
+     * Otoder Essentials çalışıyorsa tam tohumlama ve demo ayarları için hook.
+     */
+    do_action('otoder_seed_defaults');
+
+    if (get_option('otoder_theme_fallback_seeded')) {
         return;
     }
 
-    $demo_user = username_exists('otoder-demo');
-    if (!$demo_user) {
-        $demo_user = wp_create_user('otoder-demo', wp_generate_password(), 'demo@example.com');
-    }
+    // Eklenti yoksa minimum vitrin için iki ilan daha ekle.
+    $demo_user = username_exists('otoder-demo') ?: wp_create_user('otoder-demo', wp_generate_password(), 'demo@example.com');
 
-    $demo_posts = [
+    $demos = [
         [
             'title' => '2022 BMW 320i Sport Line',
             'price' => '2350000',
@@ -430,7 +441,11 @@ add_action('after_switch_theme', function () {
         ],
     ];
 
-    foreach ($demo_posts as $demo) {
+    foreach ($demos as $demo) {
+        if (get_page_by_title($demo['title'], OBJECT, 'listing')) {
+            continue;
+        }
+
         $post_id = wp_insert_post([
             'post_title' => $demo['title'],
             'post_type' => 'listing',
@@ -453,7 +468,7 @@ add_action('after_switch_theme', function () {
         }
     }
 
-    update_option('otoder_demo_loaded', 1);
+    update_option('otoder_theme_fallback_seeded', 1);
 });
 
 /**

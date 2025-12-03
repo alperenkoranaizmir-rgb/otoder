@@ -7,13 +7,13 @@ Tema ile birlikte yüklenmesi gereken otomatik kurulum ve toplayıcı eklentisid
 2. WordPress yönetiminde **Eklentiler > Yüklü Eklentiler** ekranından **Otoder Essentials** eklentisini etkinleştirin.
 3. Etkinleştirme sonrası otomatik olarak aşağıdakiler yapılır:
    - `listing` özel yazı tipi ve marka/model/yakıt/vites/kasa/rengine/konuma ait taksonomiler kayıt edilir.
-   - Ana sayfa, ilan gönder, hesap ve vitrin sayfaları ilgili kısa kodlar ile oluşturulur.
-   - Örnek kategoriler ve 3 adet demo ilan eklenir.
+   - Ana sayfa, ilan gönder, hesap ve vitrin sayfaları ilgili kısa kodlar ile oluşturulur ve ön sayfa olarak atanır.
+   - Örnek kategoriler, menü ataması ve 3 adet demo ilan eklenir.
    - Saatlik çalışan ilan toplayıcı cron işi başlatılır.
 
 ## Kullanım
 - Yönetim panelinde **Araçlar > Otoder Otomasyon** sayfasından tek tuşla tohumlama işlemini yeniden çalıştırabilir veya ilan toplayıcıyı hemen tetikleyebilirsiniz.
-- Toplayıcı, arabam.com ve sahibinden.com sayfalarını HTTP isteği ile yoklar, bulduğu başlıkları benzersiz açıklamalarla yeni ilanlara dönüştürür. Kaynak yanıtı alınamazsa örnek ilanlar eklemeye devam eder.
+- Toplayıcı, arabam.com ve sahibinden.com sayfalarını HTTP isteği ile yoklar, bulduğu başlıkları benzersiz açıklamalarla yeni ilanlara dönüştürür; benzersiz `otoder_source_key` ile tekrar eden girişleri engeller. Kaynak yanıtı alınamazsa örnek ilanlar eklemeye devam eder.
 - Oluşturulan sayfalarda tema kısa kodları ( `[otoder_search]`, `[otoder_submit]`, `[otoder_account]` ) hazır gelir.
 
 ## Özellikler
