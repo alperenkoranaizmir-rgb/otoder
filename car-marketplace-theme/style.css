@@ -1,0 +1,165 @@
+/*
+Theme Name: Otoder Auto Marketplace
+Theme URI: https://example.com/otoder-auto-marketplace
+Author: Otoder
+Description: Fully managed auto listing theme inspired by arabam.com and sahibinden.com with front-end submissions and demo content.
+Version: 1.0.0
+License: GPL-2.0+
+Text Domain: otoder
+*/
+
+/* Base Layout */
+body {
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    background: #f5f6f8;
+    color: #1d2939;
+    margin: 0;
+}
+
+a { color: #e63946; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+header.site-header {
+    background: #0f172a;
+    color: #fff;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.site-logo {
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 0.5px;
+}
+
+nav.primary-nav a {
+    color: #e2e8f0;
+    margin-left: 16px;
+    font-weight: 600;
+}
+
+.container {
+    width: min(1200px, 94vw);
+    margin: 0 auto;
+    padding: 24px 0 48px;
+}
+
+.hero {
+    background: linear-gradient(120deg, #0f172a, #1d4ed8);
+    color: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    display: grid;
+    gap: 16px;
+}
+
+.hero h1 { margin: 0; font-size: 28px; }
+.hero p { margin: 0; color: #cbd5e1; }
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #e2e8f0;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.price {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.meta {
+    color: #475467;
+    font-size: 14px;
+}
+
+.submit-form, .search-form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+    display: grid;
+    gap: 12px;
+}
+
+.submit-form label, .search-form label { font-weight: 600; color: #0f172a; }
+.submit-form input, .submit-form select, .submit-form textarea,
+.search-form input, .search-form select {
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 14px;
+    background: #f8fafc;
+}
+
+.button {
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #e11d48, #f97316);
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+}
+
+.button.secondary {
+    background: #0f172a;
+}
+
+.listing-meta { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.listing-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.listing-gallery img {
+    width: 100%;
+    border-radius: 10px;
+    height: 140px;
+    object-fit: cover;
+}
+
+.footer {
+    text-align: center;
+    color: #64748b;
+    padding: 32px 0;
+}
+
+.alert { padding: 12px 14px; border-radius: 10px; background: #fef3c7; color: #92400e; }
+.success { background: #ecfdf3; color: #027a48; }
+.error { background: #fef2f2; color: #b91c1c; }
